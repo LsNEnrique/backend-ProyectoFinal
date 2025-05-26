@@ -1,13 +1,13 @@
-export default class IUserRepository {
+export default class IinventarioRepository {
     /*
     Crear Usuario
     @param {Object} Usuario
     @returns {Promise<Object>} Usuario Creado
     */
-    async create(user) {
+    async create(producto) {
       throw new Error('Método no implementado');
     }
-    async update(id, user) {
+    async update(id, producto) {
       throw new Error('Método no implementado');
     }
     async delete(id) {
@@ -16,10 +16,13 @@ export default class IUserRepository {
     async getAll() {
       throw new Error('Método no implementado');
     }
-    async findByFullName(nombre) {
+    async findByProductName(nombre) {
       throw new Error('Método no implementado');
     }
-    async findByUser(username) {
+    async findByType(tipo) {
+      throw new Error('Metodo no implementado');
+    }
+    async findById(id) {
       throw new Error('Método no implementado');
     }
   }

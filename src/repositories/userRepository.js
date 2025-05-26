@@ -37,11 +37,9 @@ export default class UserRepository extends IUserRepository {
     }));
   }
 
-  async findByFullName(nombre, apaterno, amaterno) {
+  async findByFullName(nombre) {
     const users = await this.collection
       .where('nombre', '==', nombre)
-      .where('apaterno', '==', apaterno)
-      .where('amaterno', '==', amaterno)
       .get();
     return users.empty ? null : {
       id: users.docs[0].id,
@@ -56,15 +54,6 @@ export default class UserRepository extends IUserRepository {
       id: users.docs[0].id,
       ...users.docs[0].data(),
     }
-  }
-  async findByRol(rol) {
-    const users = await this.collection
-      .where('rol', '==', rol)
-      .get();
-    return users.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
   }
   async updateSessionToken(id, sessionToken) {
     await this.collection.doc(id)
