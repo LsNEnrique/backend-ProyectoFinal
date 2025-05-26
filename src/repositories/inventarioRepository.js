@@ -37,7 +37,7 @@ export default class inventarioRepository extends IinventarioRepository {
     }));
   }
 
-  async findByProdcutName(nombre) {
+  async findByProductName(nombre) {
     const nombre = await this.collection
       .where('nombre', '==', nombre)
       .get();
@@ -64,7 +64,7 @@ export default class inventarioRepository extends IinventarioRepository {
     return user.exists ? user.data().currentSessionToken : null;
   }
   async getById(id) {
-    const user = await this.collection.doc(id).get();
-    return user.exists ? { id, ...user.data() } : null;
+    const producto = await this.collection.doc(id).get();
+    return producto.exists ? { id, ...producto.data() } : null;
   }
 }
