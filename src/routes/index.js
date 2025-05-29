@@ -1,12 +1,15 @@
-import express from 'express'
-import userRoutes from './userRoutes.js'
+const express = require('express');
+const router = express.Router();
 
-const router = express.Router()
+// Rutas disponibles
+// const userRoutes = require('./userRoutes');
+// const inventarioRoutes = require('./inventarioRoutes');
 
-router.get('/', (req,res) => { 
-    res.json({ message: 'Servidor de API'})
-})
+// router.use('/users', userRoutes);
+// router.use('/inventario', inventarioRoutes);
 
-router.use('/users', userRoutes)
+router.get('/', (req, res) => {
+  res.send('📡 API funcionando correctamente');
+});
 
-export default router
+module.exports = router;
