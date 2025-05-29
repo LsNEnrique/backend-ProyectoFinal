@@ -9,6 +9,6 @@ router.get('/', (req,res) => {
 })
 
 router.use('/users', userRoutes)
-router.use('/product', product)
+router.use('/product', inventarioRoutes)
 
 export default router
