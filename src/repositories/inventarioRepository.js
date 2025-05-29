@@ -8,9 +8,9 @@ export default class inventarioRepository extends IinventarioRepository {
   }
 
   async create(producto) {
-    const newUser = await this.collection.add(producto);
+    const newProduct = await this.collection.add(producto);
     return {
-      id: newUser.id,
+      id: newProduct.id,
       ...producto,
     }
   }
