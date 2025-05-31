@@ -15,15 +15,15 @@ const inventarioRoutes = [
   },
   {
     method: 'get',
-    path: '/by-user/:usuario',
-    middleware: [authMiddleware, roleMiddleware('admin')],
-    handler: 'getByUser'
-  },
-  {
-    method: 'get',
     path: '/by-rol/:rol',
     middleware: [authMiddleware, roleMiddleware('admin')],
     handler: 'getByRol'
+  },
+  {
+    method: 'get',
+    path: '/by-type/:tipo',
+    middleware: [authMiddleware, roleMiddleware('admin')],
+    handler: 'getByType'
   },
   {
     method: 'post',
@@ -44,27 +44,10 @@ const inventarioRoutes = [
     handler: 'delete'
   },
   {
-    method: 'post',
-    path: '/login',
-    handler: 'login'
-  },
-  {
-    method: 'post',
-    path: '/logout',
-    middleware: [authMiddleware],
-    handler: 'logout'
-  },
-  {
-    method: 'post',
-    path: '/unlock/:id',
-    middleware: [authMiddleware, roleMiddleware('admin')],
-    handler: 'unlockUser'
-  },
-  {
     method: 'get',
     path: '/user',
     middleware: [authMiddleware],
-    handler: 'getUserByUsername'
+    handler: 'getUserByProductName'
   }
 ]
 
