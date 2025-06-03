@@ -1,4 +1,4 @@
-import IinventarioRepository from "../interfaces/IinventarioRepository";
+import IinventarioRepository from "../interfaces/IinventarioRepository.js";
 import { db } from '../config/firebase.js'
 
 export default class inventarioRepository extends IinventarioRepository {
@@ -38,21 +38,21 @@ export default class inventarioRepository extends IinventarioRepository {
   }
 
   async findByProductName(nombre) {
-    const nombre = await this.collection
+    const product = await this.collection
       .where('nombre', '==', nombre)
       .get();
-    return nombre.empty ? null : {
-      id: nombre.docs[0].id,
-      ...nombre.docs[0].data(),
+    return product.empty ? null : {
+      id: product.docs[0].id,
+      ...product.docs[0].data(),
     }
     }
     async findByType(tipo) {
-    const tipo = await this.collection
+    const type = await this.collection
       .where('tipo', '==', tipo)
       .get();
-    return tipo.empty ? null : {
-      id: tipo.docs[0].id,
-      ...tipo.docs[0].data(),
+    return type.empty ? null : {
+      id: type.docs[0].id,
+      ...type.docs[0].data(),
     }
   }
   async updateSessionToken(id, sessionToken) {
