@@ -37,7 +37,7 @@ export default class UserRepository extends IUserRepository {
     }));
   }
 
-  async findByFullName(nombre) {
+  async findByName(nombre) {
     const users = await this.collection
       .where('nombre', '==', nombre)
       .get();

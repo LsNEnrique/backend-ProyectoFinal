@@ -1,5 +1,5 @@
 import inventarioRepository from '../repositories/inventarioRepository.js'
-import { Inventario } from './../models/inventarioModel.js'
+import { Inventario } from '../models/inventarioModel.js'
 
 export default class InventarioService {
   constructor() {

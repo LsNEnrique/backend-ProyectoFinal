@@ -15,11 +15,11 @@ export default class InventarioController {
     }
   }
 
-  async getByUser (req, res, next) {
+  async getByRol (req, res, next) {
     try {
-      const { usuario } = req.params
-      const user = this.userService.getByUser(usuario)
-      res.json(user)
+      const { rol } = req.params
+      const product = this.inventarioService.getByRol(rol)
+      res.json(product)
     } catch (error) {
       next(error)
     }

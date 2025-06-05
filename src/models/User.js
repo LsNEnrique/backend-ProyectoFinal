@@ -4,7 +4,7 @@ export class User {
         correo,
         telefono,
         genero,
-        usuario,
+        username,
         password,
         bloqueado = false,
         intentos = 0
@@ -13,7 +13,7 @@ export class User {
         this.correo = correo;
         this.telefono = telefono;
         this.genero = genero;
-        this.usuario = usuario,
+        this.username = username,
         this.password = password;
 
     }

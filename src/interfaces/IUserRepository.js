@@ -16,7 +16,7 @@ export default class IUserRepository {
     async getAll() {
       throw new Error('Método no implementado');
     }
-    async findByFullName(nombre) {
+    async findByName(nombre) {
       throw new Error('Método no implementado');
     }
     async findByUser(username) {
