@@ -11,8 +11,8 @@ export default class UserService {
   async getAll () {
     return await this.userRepository.getAll()
   }
-  async findByUser (username) {
-    const user = await this.userRepository.findByUser(username)
+  async findByName (nombre) {
+    const user = await this.userRepository.findByName(nombre)
     if (!user) {
       throw new Error('Usuario no encontrado')
     }
@@ -27,7 +27,7 @@ export default class UserService {
     if (userExists) {
       throw { statusCode: 400, message: 'Usuario ya existe' }
     }
-    const fullNameExists = await this.userRepository.findByFullName(user.nombre, user.apaterno, user.amaterno)
+    const fullNameExists = await this.userRepository.findByName(user.nombre)
 
     if (fullNameExists) {
       throw { statusCode: 400, message: 'Nombre completo ya existe' }
@@ -115,11 +115,11 @@ export default class UserService {
       await this.userRepository.update(id, { bloqueado: true })
       throw { message: 'Usuario bloqueado despues de 5 intentos', statusCode: 404 }
     }
-    await this.userRepository.update(id, { intento })
+    await this.userRepository.update(id, { intentos })
   }
 
-  async getByUser (usuario) {
-    const user = this.userRepository.findByUser(usuario)
+  async findByUser (username) {
+    const user = this.userRepository.findByUser(username)
     if (!user) {
       throw { message: 'Usuario no encontrado', statusCode: 404 }
     }

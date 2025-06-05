@@ -17,8 +17,8 @@ export default class UserController {
 
   async getByUser (req, res, next) {
     try {
-      const { usuario } = req.params
-      const user = this.userService.getByUser(usuario)
+      const { username } = req.params
+      const user = this.userService.getByUser(username)
       res.json(user)
     } catch (error) {
       next(error)
@@ -98,10 +98,10 @@ export default class UserController {
     }
   }
 
-  async getUserByUsername (req, res, next) {
+  async getByName (req, res, next) {
     try {
       const { usuario } = req.user
-      const user = await this.userService.getByUser(usuario)
+      const user = await this.userService.getByName(usuario)
       if (!user) {
         return res.status(400).json({ message: 'Usuario no encontrad' })
       }

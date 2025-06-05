@@ -7,6 +7,7 @@ dotenv.config()
 
 const authMiddleware = async (req, res, next) => {
   const authHeadear = req.headers['authorization']
+  console.log("Authorization Header:", authHeadear)
   if (!authHeadear) {
     return res.status(401).json({ message: 'No Autorizado' })
   }
