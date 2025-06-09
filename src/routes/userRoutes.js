@@ -8,6 +8,11 @@ const userController = new UserController()
 
 const userRoutes = [
   {
+  method: 'post',
+  path: '/register',
+  handler: 'register'
+  },
+  {
     method: 'get',
     path: '/',
     middleware: [authMiddleware , roleMiddleware('admin')],

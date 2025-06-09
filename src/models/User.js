@@ -2,19 +2,19 @@ export class User {
     constructor({
         nombre,
         correo,
-        telefono,
-        genero,
         username,
         password,
+        shopName = null,
+        shopAddress = null,
         bloqueado = false,
         intentos = 0
     }) {
         this.nombre = nombre;
         this.correo = correo;
-        this.telefono = telefono;
-        this.genero = genero;
-        this.username = username,
+        this.username = username;
         this.password = password;
+        this.shopName = shopName;
+        this.shopAddress = shopAddress;
 
     }
 }
