@@ -5,6 +5,29 @@ export default class UserController {
     this.userService = new UserService()
   }
 
+  async register(req, res, next) {
+  try {
+    const { nombre, correo, password, username, Name, Address } = req.body;
+
+    if (!nombre || !correo || !password) {
+      return res.status(400).json({ message: 'Nombre completo, email y password son obligatorios' });
+    }
+
+    const newUser = await this.userService.create({
+      nombre,
+      correo,
+      username,
+      password,
+      Name,
+      Address
+    });
+
+    res.status(201).json({ message: 'Usuario creado exitosamente', user: newUser });
+  } catch (error) {
+    next(error);
+  }
+}
+
   async getAll (req, res, next) {
     try {
       const users = await this.userService.getAll()
@@ -64,14 +87,41 @@ export default class UserController {
     }
   }
 
-  async login (req, res, next) {
-    const { usuario, password } = req.body
-    console.log('@@@ user => ', usuario, password)
+   async login(req, res) {
     try {
-      const token = await this.userService.login(usuario, password)
-      res.status(200).json({ token })
+      const { usuario, password } = req.body;
+
+      // Log de los datos recibidos
+      console.log('Datos recibidos en login:', req.body);
+
+      // Validación básica
+      if (!usuario || !password) {
+        return res.status(400).json({ message: 'Usuario y contraseña son requeridos' });
+      }
+
+      // Autenticación y generación de token
+      const token = await this.userService.login(usuario, password);
+
+      // Busca el usuario autenticado usando el campo "correo"
+      const user = await this.userService.findByUser('correo', usuario);
+
+      // Elimina la contraseña del objeto antes de enviarlo
+      delete user.password;
+
+      console.log("Usuario encontrado:", user)
+
+      console.log('Respuesta login:', {
+        token,
+        user
+      });
+
+      return res.status(200).json({
+        token,
+        user
+      });
     } catch (error) {
-      next(error)
+      console.error('Error en login:', error);
+      return res.status(error.statusCode || 500).json({ message: error.message });
     }
   }
 
@@ -98,16 +148,36 @@ export default class UserController {
     }
   }
 
-  async getByName (req, res, next) {
-    try {
-      const { usuario } = req.user
-      const user = await this.userService.getByName(usuario)
-      if (!user) {
-        return res.status(400).json({ message: 'Usuario no encontrad' })
+  async getByName(req, res) {
+  try {
+      const usuario = req.user;
+
+      let campo;
+      let valor;
+
+      if (usuario?.correo) {
+        campo = 'correo';
+        valor = usuario.correo;
+      } else if (usuario?.id) {
+        campo = 'id';
+        valor = usuario.id;
+      } else {
+        return res.status(400).json({ message: 'No se pudo identificar el usuario autenticado' });
       }
-      return res.status(200).json({ user })
+
+      console.log(`Buscando usuario por campo: "${campo}" con valor: "${valor}"`);
+
+      const user = await this.userService.findByUser(campo, valor);
+
+      if (!user) {
+        return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+
+      return res.status(200).json(user);
     } catch (error) {
-      next(error)
+      console.error('Error en getByName:', error);
+      return res.status(error.statusCode || 500).json({ message: error.message || 'Error interno del servidor' });
     }
   }
+
 }

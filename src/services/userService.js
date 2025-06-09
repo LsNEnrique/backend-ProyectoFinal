@@ -11,27 +11,32 @@ export default class UserService {
   async getAll () {
     return await this.userRepository.getAll()
   }
-  async findByName (nombre) {
-    const user = await this.userRepository.findByName(nombre)
+   async findByUser(campo, valor) {
+    if (!campo || !valor) throw new Error('Campo o valor inválido para findByUser')
+    const user = await this.userRepository.findByUser(campo, valor)
     if (!user) {
-      throw new Error('Usuario no encontrado')
+      throw { message: 'Usuario no encontrado', statusCode: 404 }
     }
     return user
   }
+
   async findByRol (rol) {
     return await this.userRepository.findByRol(rol)
   }
   async create (user) {
-    const userExists = await this.userRepository.findByUser(user.usuario)
+    console.log('create - user.usuario:', user.usuario)
+    //const userExists = await this.userRepository.findByUser(user.username)
 
-    if (userExists) {
-      throw { statusCode: 400, message: 'Usuario ya existe' }
-    }
-    const fullNameExists = await this.userRepository.findByName(user.nombre)
+    //if (userExists) {
+      //throw { statusCode: 400, message: 'Usuario ya existe' }
+    //}
+    /*
+    const fullNameExists = await this.userRepository.findByFullName(user.nombre, user.apaterno, user.amaterno)
 
     if (fullNameExists) {
       throw { statusCode: 400, message: 'Nombre completo ya existe' }
     }
+    */
 
     user.password = await bcrypt.hash(user.password, 10)
 
@@ -59,37 +64,45 @@ export default class UserService {
     return await this.userRepository.delete(id)
   }
 
-  async login (usuario, password) {
-    const user = await this.findByUser(usuario)
-    console.log('@@@ user => ', user)
-    if (!user) {
-      throw { message: 'Usuario no encontrado', statusCode: 404 }
-    }
-    
-    if (user.bloqueado) {
-      throw { message: 'Usuario Bloqueado, contacta al administrador', statusCode: 403 }
-    }
+   async login (usuario, password) {
+  const user = await this.findByUser('correo', usuario); // Aquí buscas el usuario completo con id incluido
 
-    const validPassword = await bcrypt.compare(password, user.password)
-    console.log('@@@ password => ', validPassword)
-    if (!validPassword) {
-      await this.handleFailedLogin(user.id)
-      throw { message: 'Contraseña Incorrecta', statusCode: 401 }
-    }
-
-    const existingToken = await this.userRepository.getSessionToken(user.id)
-    if (existingToken) {
-      throw { message: 'Ya esta loggeado en otro lugar', statusCode: 403 }
-    }
-
-    const token = jwt.sign({
-      id: user.id, usuario: user.usuario, rol: user.rol
-    }, process.env.JWT_SECRET, { expiresIn: '1h'})
-    
-    await this.userRepository.updateSessionToken(user.id, token)
-    
-    return token
+  if (!user) {
+    throw { message: 'Usuario no encontrado', statusCode: 404 };
   }
+
+  if (user.bloqueado) {
+    throw { message: 'Usuario Bloqueado, contacta al administrador', statusCode: 403 };
+  }
+
+  const validPassword = await bcrypt.compare(password, user.password);
+
+  if (!validPassword) {
+    await this.handleFailedLogin(user.id);
+    throw { message: 'Contraseña Incorrecta', statusCode: 401 };
+  }
+
+  // Aquí usas el id que viene con el user para obtener el token
+  const existingToken = await this.userRepository.getSessionToken(user.id);
+
+  if (existingToken) {
+    // Opcional: revocas sesión anterior
+    await this.userRepository.updateSessionToken(user.id, null);
+    await TokenService.revokeToken(existingToken);
+  }
+
+  // Generas nuevo token
+  const token = jwt.sign(
+    { id: user.id, correo: user.correo, rol: user.rol },
+    process.env.JWT_SECRET,
+    { expiresIn: '1h' }
+  );
+
+  // Actualizas el token en la BD
+  await this.userRepository.updateSessionToken(user.id, token);
+
+  return token;
+}
 
   async logout (userId, token) {
     const sessionToken = await this.userRepository.getSessionToken(userId)
@@ -118,11 +131,19 @@ export default class UserService {
     await this.userRepository.update(id, { intentos })
   }
 
-  async findByUser (username) {
-    const user = this.userRepository.findByUser(username)
+  async getByUser (usuario) {
+    const user = await this.userRepository.findByUser(usuario)
     if (!user) {
       throw { message: 'Usuario no encontrado', statusCode: 404 }
     }
     return user
   }
+
+  async findByCorreo(correo) {
+  const user = await this.userRepository.findByCorreo(correo)
+  if (!user) {
+    throw { message: 'Usuario no encontrado', statusCode: 404 }
+  }
+  return user
+}
 }
