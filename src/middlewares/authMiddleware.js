@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import TokenService from '../services/tokenService.js'
+import TokenService from '../service/tokenService.js'
 import UserRepository from '../repositories/userRepository.js'
 import dotenv from 'dotenv'
 

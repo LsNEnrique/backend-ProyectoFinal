@@ -65,6 +65,11 @@ const userRoutes = [
     path: '/user',
     middleware: [authMiddleware],
     handler: 'getByName'
+  },
+  {
+    method: 'post',
+    path: '/register',
+    handler: 'register'
   }
 ]
 

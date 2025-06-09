@@ -1,10 +1,23 @@
-import UserService from "../services/userService.js"
+import UserService from "../service/userService.js"
 
 export default class UserController {
   constructor () {
     this.userService = new UserService()
   }
-
+  async register(req, res, next) {
+  try {
+    const { NombreCompleto, email, password, Name, Address } = req.body;
+    // Validación básica
+    if (!NombreCompleto || !email || !password || !Name || !Address) {
+      return res.status(400).json({ message: 'Todos los campos son obligatorios' });
+    }
+    // Lógica: pasa a userService
+    const newUser = await this.userService.register({ NombreCompleto, email, password, Name, Address });
+    res.status(201).json({ message: 'Usuario registrado correctamente', user: newUser });
+  } catch (error) {
+    next(error);
+  }
+}
   async getAll (req, res, next) {
     try {
       const users = await this.userService.getAll()

@@ -3,11 +3,28 @@ import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import TokenService from './tokenService.js'
 import { User } from './../models/User.js'
-
+import {db} from '../config/firebase.js'
 export default class UserService {
   constructor() {
     this.userRepository = new UserRepository()
   }
+  async register({ NombreCompleto, email, password, Name, Address }) {
+    // Valida si el email ya existe (opcional, recomendado)
+    const snapshot = await db.collection('users').where('email', '==', email).get();
+    if (!snapshot.empty) {
+      throw new Error('El correo ya está registrado');
+  }
+  const newUser = {
+    NombreCompleto,
+    email,
+    password,
+    Name,
+    Address,
+    createdAt: new Date()
+  };
+  const docRef = await db.collection('users').add(newUser);
+  return { id: docRef.id, ...newUser };
+}
   async getAll () {
     return await this.userRepository.getAll()
   }
